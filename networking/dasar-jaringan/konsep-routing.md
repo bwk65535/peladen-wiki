@@ -2,7 +2,7 @@
 title: Konsep Routing
 description: 
 published: true
-date: 2024-12-27T14:25:42.898Z
+date: 2024-12-27T14:27:46.099Z
 tags: networking
 editor: markdown
 dateCreated: 2024-12-27T14:25:42.898Z
@@ -134,7 +134,7 @@ Pada protokol routing link-state, router akan mengumpulkan semua informasi alama
 - Hybrid
 Protokol yang menggunakan cara kerja hybrid akan menggabungkan beberapa aspek dari distance vector dan link-state routing protocol. Sebagai contoh, EIGRP menggunakan distance untuk memilih jalur terbaik, tetapi ditambah dengan penghitungan beberapa kriteria lain, seperti bandwidth, load, delay, reliability dan MTU.
 
-# Default Route
+## Default Route
 Default route merupakan route yang digunakan router untuk mem-forward traffic jika tidak ada route lain yang lebih spesifik. Default route biasanya dikonfigurasi secara statik, tetapi bisa juga di advertise menggunakan dynamic routing.
 
 Contoh penggunaan default route yang paling umum adalah untuk mengakses Internet. Kita tidak mungkin mengkonfigurasi seluruh alamat IP yang ada di Internet satu per satu secara manual, tetapi kita bisa mengkonfigurasi satu default route yang mengarah ke router ISP untuk bisa terhubung ke Internet.
