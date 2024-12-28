@@ -2,8 +2,8 @@
 title: Share folder Virtualbox dari Windows 10 host ke Ubuntu 20.04 Server Guest
 description: 
 published: true
-date: 2024-12-28T07:16:56.708Z
-tags: virtualization, virtualbox, labs
+date: 2024-12-28T10:56:45.584Z
+tags: virtualbox, labs
 editor: markdown
 dateCreated: 2024-12-28T07:11:46.927Z
 ---
