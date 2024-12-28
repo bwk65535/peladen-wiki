@@ -2,8 +2,8 @@
 title: Perangkat Jaringan
 description: 
 published: true
-date: 2024-11-17T09:38:36.545Z
-tags: network
+date: 2024-12-28T07:08:16.679Z
+tags: networking
 editor: markdown
 dateCreated: 2024-11-17T09:38:29.655Z
 ---
