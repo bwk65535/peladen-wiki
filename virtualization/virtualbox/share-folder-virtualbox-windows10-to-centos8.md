@@ -2,8 +2,8 @@
 title: Share folder Virtualbox dari Windows 10 host ke Centos 8 Server Guest
 description: 
 published: true
-date: 2024-12-28T07:17:38.739Z
-tags: virtualization, virtualbox, labs
+date: 2024-12-28T10:57:43.332Z
+tags: virtualbox, labs
 editor: markdown
 dateCreated: 2024-12-28T07:14:41.815Z
 ---
