@@ -2,7 +2,7 @@
 title: Membuat dan Menjalankan Ansible Playbook
 description: 
 published: true
-date: 2025-01-01T14:02:19.798Z
+date: 2025-01-01T14:04:34.585Z
 tags: automation, ansible
 editor: markdown
 dateCreated: 2025-01-01T14:02:19.798Z
@@ -87,7 +87,7 @@ web1.example.com           : ok=2    changed=1    unreachable=0    failed=0    s
 
 Di atas dapat kita lihat nama play yang dijalankan, nama task-task yang dijalankan beserta hasilnya. Pada bagian PLAY RECAP dapat kita lihat juga hasil keseluruhan dari playbook. Status `changed=1` menunjukkan perubahan yang dilakukan pada managed host yaitu pada task menambahkan user eriksen.
 
-Kita bisa melihat apakah user tersebut sudah ada di host web1.example.com menggunakan ansible adhoc command:
+Kita bisa melihat apakah user tersebut sudah ada di host `web1.example.com` menggunakan ansible adhoc command:
 ```
 $ ansible web1.example.com -m shell -a 'id eriksen; grep eriksen /etc/passwd'
 web1.example.com | CHANGED | rc=0 >>
@@ -171,4 +171,4 @@ $ ansible web2.example.com -m shell -a 'id eriksen; grep eriksen /etc/passwd'
 web2.example.com | FAILED | rc=1 >>
 id: ‘eriksen’: no such usernon-zero return code
 ```
-Apabila kita cek user eriksen masih belum ada di host web2.example.com karena kita baru melakukan dry run saja.
+Apabila kita cek user eriksen masih belum ada di host `web2.example.com` karena kita baru melakukan dry run saja.
