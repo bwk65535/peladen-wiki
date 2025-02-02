@@ -2,7 +2,7 @@
 title: Instalasi dan Upgrade package Apache Tomcat pada Rocky Linux 9
 description: 
 published: true
-date: 2025-02-02T07:38:52.081Z
+date: 2025-02-02T07:40:36.554Z
 tags: labs, server, linux, tomcat
 editor: markdown
 dateCreated: 2025-02-02T05:14:30.442Z
@@ -71,6 +71,8 @@ Lalu buat file systemd service untuk tomcat.
 
 ```plaintext
 # vi /etc/systemd/system/tomcat.service
+```
+```plaintext
 [Unit]
 
 Description=Tomcat
@@ -118,7 +120,7 @@ Cek status tomcat dan port yang listen
 # netstat -plnt | grep java
 ```
 
-Cek versi tomcat yang terinstall
+Cek versi tomcat yang terinstal
 
 ```plaintext
 java -cp /opt/tomcat/lib/catalina.jar org.apache.catalina.util.ServerInfo
