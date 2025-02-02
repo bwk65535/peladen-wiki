@@ -2,13 +2,12 @@
 title: Instalasi dan Upgrade package Apache Tomcat pada Rocky Linux 9
 description: 
 published: true
-date: 2025-02-02T05:14:30.442Z
+date: 2025-02-02T06:00:51.008Z
 tags: labs, server, linux, tomcat
 editor: ckeditor
 dateCreated: 2025-02-02T05:14:30.442Z
 -->
 
-<p>Instalasi dan Upgrade package Apache Tomcat pada Rocky Linux 9</p>
 <p>Apache Tomcat adalah sebuah software open source untuk menjalankan program Java di dalam lingkungan web server. Tomcat merupakan implementasi dari teknologi Jakarta Servlet, Jakarta Expression Language, and WebSocket sehingga disebut juga Java Web Application Server.</p>
 <p>Tomcat 10 dan sesudahnya mengimplementasikan spesifikasi yang dikembangkan oleh Jakarta EE, sedangkan Tomcat 9 dan sebelumnya mengimplementasikan spesifikasi yang dikembangkan oleh Java EE. Jakarta EE sendiri adalah pengembangan terbaru dari platform Java EE.</p>
 <h2>Prasyarat</h2>
@@ -26,8 +25,8 @@ dateCreated: 2025-02-02T05:14:30.442Z
 # tar xzvf /tmp/apache-tomcat-10*tar.gz -C /opt/tomcat --strip-components=1
 # chown -R tomcat:tomcat /opt/tomcat/
 # chmod -R u+x /opt/tomcat/bin</code></pre>
-<p>Create systemd service untuk Tomcat.</p>
-<p>Cek path Java JDK/JRE yang sudah terinstall</p>
+<p>Selanjutnya buat systemd service untuk memudahkan kita me-manage start/stop tomcat.</p>
+<p>Pertama, cek path Java JDK/JRE yang sudah terinstall</p>
 <pre><code class="language-plaintext"># alternatives --list
 libnssckbi.so.x86_64    auto    /usr/lib64/pkcs11/p11-kit-trust.so
 soelim                  auto    /usr/bin/soelim.groff
@@ -44,9 +43,11 @@ jre_openjdk             auto    /usr/lib/jvm/java-11-openjdk-11.0.25.0.9-3.el9.x
 jre_11                  auto    /usr/lib/jvm/java-11-openjdk-11.0.25.0.9-3.el9.x86_64
 jre_11_openjdk          auto    /usr/lib/jvm/jre-11-openjdk-11.0.25.0.9-3.el9.x86_64</code></pre>
 <p>Pada output di atas, terlihat jre_openjdk terletak di path <code>/usr/lib/jvm/java-11-openjdk-11.0.25.0.9-3.el9.x86_64</code></p>
-<p>Buat file systemd service untuk tomcat.</p>
-<p>Sesuaikan value <code>JAVA_HOME</code> dengan path jre_openjdk di atas.</p>
-<p>Sesuaikan juga value <code>CATALINA_OPTS</code> dengan spesifikasi aplikasi java yang ingin dijalankan.</p>
+<p>Lalu buat file systemd service untuk tomcat.</p>
+<ul>
+  <li>Sesuaikan value <code>JAVA_HOME</code> dengan path jre_openjdk di atas.</li>
+  <li>Sesuaikan juga value <code>CATALINA_OPTS</code> dengan spesifikasi aplikasi java yang ingin dijalankan.</li>
+</ul>
 <pre><code class="language-plaintext"># vi /etc/systemd/system/tomcat.service
 [Unit]
 
@@ -85,7 +86,7 @@ WantedBy=multi-user.target</code></pre>
 # netstat -plnt | grep java</code></pre>
 <h2>Upgrade Apache Tomcat</h2>
 <p>Untuk melakukan upgrade tomcat, langkah-langkahnya kurang lebih sama seperti saat melakukan instalasi.</p>
-<p>Matikan tomcat terlebih dahulu, lalu rename folder tomcat yang lama</p>
+<p>Matikan tomcat terlebih dahulu, lalu rename folder tomcat yang lama.</p>
 <pre><code class="language-plaintext"># systemctl stop tomcat
 # mv /opt/tomcat /opt/tomcat-old</code></pre>
 <p>Download dan install Tomcat versi baru.</p>
