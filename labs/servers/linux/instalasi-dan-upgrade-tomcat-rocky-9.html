@@ -2,7 +2,7 @@
 title: Instalasi dan Upgrade package Apache Tomcat pada Rocky Linux 9
 description: 
 published: true
-date: 2025-02-02T06:01:52.565Z
+date: 2025-02-02T06:21:15.288Z
 tags: labs, server, linux, tomcat
 editor: ckeditor
 dateCreated: 2025-02-02T05:14:30.442Z
@@ -22,7 +22,7 @@ dateCreated: 2025-02-02T05:14:30.442Z
 <pre><code class="language-plaintext"># useradd -m -d /opt/tomcat -U -s /bin/false tomcat</code></pre>
 <p>Download dan konfigurasi package Tomcat.</p>
 <pre><code class="language-plaintext"># wget https://dlcdn.apache.org/tomcat/tomcat-10/v10.1.31/bin/apache-tomcat-10.1.31.tar.gz -P /tmp
-# tar xzvf /tmp/apache-tomcat-10*tar.gz -C /opt/tomcat --strip-components=1
+# tar xzvf /tmp/apache-tomcat-10.1.31.tar.gz -C /opt/tomcat --strip-components=1
 # chown -R tomcat:tomcat /opt/tomcat/
 # chmod -R u+x /opt/tomcat/bin</code></pre>
 <p>Selanjutnya buat systemd service untuk memudahkan kita me-manage start/stop tomcat.</p>
@@ -84,19 +84,22 @@ WantedBy=multi-user.target</code></pre>
 <p>Cek status tomcat dan port yang listen</p>
 <pre><code class="language-plaintext"># systemctl status tomcat
 # netstat -plnt | grep java</code></pre>
+<p>Cek versi tomcat yang terinstall</p>
+<pre><code class="language-plaintext">java -cp /opt/tomcat/lib/catalina.jar org.apache.catalina.util.ServerInfo</code></pre>
 <h2>Upgrade Apache Tomcat</h2>
 <p>Untuk melakukan upgrade tomcat, langkah-langkahnya kurang lebih sama seperti saat melakukan instalasi.</p>
-<p>Matikan tomcat terlebih dahulu, lalu rename folder tomcat yang lama.</p>
+<p>Matikan tomcat terlebih dahulu, lalu backup folder tomcat yang lama.</p>
 <pre><code class="language-plaintext"># systemctl stop tomcat
-# mv /opt/tomcat /opt/tomcat-old</code></pre>
+# cp -rp /opt/tomcat /opt/tomcat-old</code></pre>
 <p>Download dan install Tomcat versi baru.</p>
 <pre><code class="language-plaintext"># wget https://dlcdn.apache.org/tomcat/tomcat-10/v10.1.34/bin/apache-tomcat-10.1.34.tar.gz -P /tmp
-# tar xzvf /tmp/apache-tomcat-10*tar.gz -C /opt/tomcat --strip-components=1
+# tar xzvf /tmp/apache-tomcat-10.1.34.tar.gz -C /opt/tomcat --strip-components=1
 # chown -R tomcat:tomcat /opt/tomcat/
 # chmod -R u+x /opt/tomcat/bin</code></pre>
-<p>Jalankan kembali tomcat, dan cek statusnya.</p>
+<p>Jalankan kembali tomcat, dan cek status serta versi yang telah di upgrade.</p>
 <pre><code class="language-plaintext"># systemctl start tomcat
-
 # systemctl status tomcat
-# netstat -plnt | grep java</code></pre>
+
+# netstat -plnt | grep java
+# java -cp /opt/tomcat/lib/catalina.jar org.apache.catalina.util.ServerInfo</code></pre>
 <p>&nbsp;</p>
