@@ -1,0 +1,87 @@
+<!--
+title: Instalasi PlantUML pada Rocky Linux 9 dan Integrasi ke Gitlab
+description: 
+published: true
+date: 2025-02-02T07:28:32.713Z
+tags: labs, server, linux, gitlab, plantuml
+editor: ckeditor
+dateCreated: 2025-02-02T07:28:32.713Z
+-->
+
+<p>PlantUML merupakan tool yang digunakan untuk merender diagram dari sebuah text. PlantUML dapat diintegrasikan dengan tool lain seperti gitlab, sehingga kita dapat membuat diagram dalam bentuk code yang disimpan di repo. Ketika kita membuka file diagram tersebut melalui web, gitlab akan mengirim text diagram tersebut ke PlantUML untuk dilakukan rendering. Sehingga kita bisa melihatnya dalam bentuk gambar diagram.</p>
+<h2>Prasyarat</h2>
+<ul>
+  <li>Niat</li>
+  <li>Server yang sudah diinstal Rocky Linux 9</li>
+</ul>
+<p>Di lab ini, kita menggunakan server yang sama dengan server gitlab untuk memudahkan.</p>
+<h2>Step 1 – Instalasi Prerequisites</h2>
+<p>Kita membutuhkan Java+Tomcat, beserta package graphviz untuk menjalankan PlantUML.</p>
+<p>Install Graphviz</p>
+<pre><code class="language-plaintext">dnf install graphviz</code></pre>
+<p>Instalasi Tomcat</p>
+<p>Dapat dicek <a href="/labs/servers/linux/instalasi-dan-upgrade-tomcat-rocky-9">disini</a></p>
+<p>Setelah selesai diinstal, sesuaikan port tomcat. Defaultnya tomcat listen http menggunakan port 8080, yang biasanya port itu juga digunakan oleh gitlab. Pada contoh ini kita akan mengganti port tomcat menggunakan http port 8005 dan shutdown port 8006</p>
+<p><code>vi /opt/tomcat/conf/server.xml</code></p>
+<pre><code class="language-plaintext">&lt;Server port="8006" shutdown="SHUTDOWN"&gt;
+...
+   &lt;Connector port="8005" protocol="HTTP/1.1"
+...</code></pre>
+<h2>Step 2 - Instalasi PlantUML</h2>
+<p>Download package plantuml, lalu ekstrak dan masukkan ke folder webapps tomcat.</p>
+<pre><code class="language-plaintext">wget -P /tmp https://github.com/plantuml/plantuml-server/releases/download/v1.2024.7/plantuml-jsp-v1.2024.7.war
+cp /tmp/plantuml-jsp-v1.2024.7.war /opt/tomcat/webapps/plantuml.war
+chown tomcat:tomcat /opt/tomcat/webapps/plantuml.war</code></pre>
+<p>Restart tomcat dan cek port plantuml apakah sudah LISTEN seperti yang dikonfigurasi pada server.xml tomcat.</p>
+<pre><code class="language-plaintext">systemctl restart tomcat
+systemctl status tomcat
+ss -tlpn | grep java</code></pre>
+<p>Test curl ke endpoint plantuml atau bisa juga kita open dari browser jika laptop yang kita gunakan bisa langsung mengakses port 8005 ke server.</p>
+<pre><code class="language-plaintext">curl --location --verbose "http://localhost:8005/plantuml/"</code></pre>
+<p><a href="https://res.cloudinary.com/peladen/image/upload/v1738477803/peladen/2025/02/plantuml_server.png">https://res.cloudinary.com/peladen/image/upload/v1738477803/peladen/2025/02/plantuml_server.png</a></p>
+<h2>Step 3 – Integrasi PlantUML dengan Gitlab</h2>
+<h3>Konfigurasi plantuml path di gitlab.rb</h3>
+<p><code># vi /etc/gitlab/gitlab.rb</code></p>
+<p>Jika bagian <code>custom_gitlab_server_config</code> sudah ada isinya, maka masukkan konfigurasi untuk plantuml di satu tempat yg sama. Karena custom_gitlab_server_config pada gitlab.rb hanya bisa satu.</p>
+<pre><code class="language-plaintext">### PlantUML
+nginx['custom_gitlab_server_config'] = "
+ location /-/plantuml {
+   rewrite ^/-/(plantuml.*) /$1 break;
+   proxy_set_header  HOST               $host;
+   proxy_set_header  X-Forwarded-Host   $host;
+   proxy_set_header  X-Forwarded-Proto  $scheme;
+   proxy_cache off;
+   proxy_pass http://localhost:8005/plantuml;
+ }"
+
+gitlab_rails['env'] = { 'PLANTUML_ENCODING' =&gt; 'deflate' }</code></pre>
+<p>Rekonfigurasi gitlab</p>
+<pre><code class="language-plaintext"># gitlab-ctl reconfigure</code></pre>
+<p>&nbsp;</p>
+<h3>Enable PlantUML dari Gitlab Web GUI</h3>
+<p>Masuk ke gitlab sebagai admin, lalu Settings &gt; General.</p>
+<p>Pada menu general, expand bagian PlantUML</p>
+<p><a href="https://res.cloudinary.com/peladen/image/upload/v1738477801/peladen/2025/02/gitlab_plantuml_01.png">https://res.cloudinary.com/peladen/image/upload/v1738477801/peladen/2025/02/gitlab_plantuml_01.png</a></p>
+<p>Ceklis pilihan Enable PlantUML, lalu isi alamat endpoint plantuml.</p>
+<p>Alamat endpoint uml sama dengan domain atau ip address yang digunakan untuk mengakses gitlab ditambah path <code>/-/plantuml/</code></p>
+<p><a href="https://res.cloudinary.com/peladen/image/upload/v1738477800/peladen/2025/02/gitlab_plantuml_02.png">https://res.cloudinary.com/peladen/image/upload/v1738477800/peladen/2025/02/gitlab_plantuml_02.png</a></p>
+<h2>Step 4 – Testing</h2>
+<p>Untuk pengetesan, kita dapat membuat file yang berisi plantuml block. Beberapa format file yang di support plantuml contohnya markdown, asciidoc, dan reStructuredText.</p>
+<p>Sebagai contoh, file markdown berikut akan menampilkan diagram seperti di bawah ini.</p>
+<p>```plantuml</p>
+<p>Bob -&gt; Alice : hello</p>
+<p>Alice -&gt; Bob : hi</p>
+<p>```</p>
+<p><a href="https://res.cloudinary.com/peladen/image/upload/v1738477801/peladen/2025/02/plantuml_markdown_example.png">https://res.cloudinary.com/peladen/image/upload/v1738477801/peladen/2025/02/plantuml_markdown_example.png</a></p>
+<p>Ref:</p>
+<p>https://docs.gitlab.com/ee/administration/integration/plantuml.html#enable-plantuml-integration</p>
+<p>&nbsp;</p>
+<p>## Tshoot</p>
+<ul>
+  <li>Request header is too large</li>
+</ul>
+<p>Increase maxHttpHeaderSize in <code>$TOMCAT_HOME/conf/server.xml</code></p>
+<pre><code class="language-plaintext">&lt;Connector port="8080" maxHttpHeaderSize="65536" protocol="HTTP/1.1" ... /&gt;</code></pre>
+<p>&nbsp;</p>
+<p>Ref:</p>
+<p>https://www.madhur.co.in/blog/2020/02/29/request-header-is-too-large.html</p>
