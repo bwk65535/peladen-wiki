@@ -2,7 +2,7 @@
 title: Instalasi PlantUML pada Rocky Linux 9 dan Integrasi ke Gitlab
 description: 
 published: true
-date: 2025-02-02T07:37:12.005Z
+date: 2025-02-02T07:37:50.110Z
 tags: labs, server, linux, gitlab, plantuml
 editor: markdown
 dateCreated: 2025-02-02T07:28:32.713Z
@@ -130,7 +130,7 @@ Alice -> Bob : hi
 Ref:
 https://docs.gitlab.com/ee/administration/integration/plantuml.html#enable-plantuml-integration
 
-### Troubleshoot
+## Troubleshooting
 
 -   Request header is too large
 
